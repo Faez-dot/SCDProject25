@@ -1,0 +1,12 @@
+#Node.js
+node_modules/
+
+.env
+
+*.bson
+*.lock
+*.wt
+*.log
+diagnostic.data/
+journal/
+WiredTiger*
