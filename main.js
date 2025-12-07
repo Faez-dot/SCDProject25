@@ -86,6 +86,18 @@ function menu() {
         });
        break;
 
+      case '7': {
+        const path=require('path');
+        const fs=require('fs');
+        const exportFile=path.join(__dirname, 'export.txt');
+        const records=db.listRecords();
+        const header=`Export Date: ${new Date().toISOString()}\nTotal Records: ${records.length}\nFile: export.txt\n\n`;
+        const body=records.map((r,i)=>`${i+1}. ID:${r.id} | Name: ${r.name} | Value: ${r.value}}\n`).join('\n');
+        fs.writeFileSync(exportFile,header+body,'utf8');
+        console.log('Data exported successfully to export.txt');
+        menu();
+        break;
+       }
       case '9':
         console.log('👋 Exiting NodeVault...');
         rl.close();
