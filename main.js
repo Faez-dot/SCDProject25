@@ -98,6 +98,39 @@ function menu() {
         menu();
         break;
        }
+
+      case '8' :{
+
+        const path=require('path');
+        const fs=require('fs');
+        const vaultFile=path.join(__dirname,'vault.json');
+        const records=db.listRecords();
+        if (records.length===0){
+           console.log("No records");
+        }
+        else {
+           const stats={
+                total: records.length,
+                lastModified: fs.existsSync(vaultFile) ? fs.statSync(vaultFile).mtime.toISOString(): 'N/A',
+                longestName: records.reduce((a,b)=>a.name.length>b.name.length?a:b).name,
+                earliest: records.reduce((a,b)=>new Date(a.created)<new Date(b.created)?a:b).created,
+                latest: records.reduce((a,b)=>new Date(a.created)>new Date(b.created)?a:b).created
+           }; 
+           console.log(
+`-------------------------
+Statistics:
+-------------------------
+Total Records: ${stats.total}
+Last Modified: ${stats.lastModified}
+Longest Name: ${stats.longesrName} (${stats.longestName.length} chars)
+Earliest Record: ${stats.earilest}
+Latest Record: ${stats.latest}
+-------------------------`);
+         }
+         menu();
+         break;
+      }
+
       case '9':
         console.log('👋 Exiting NodeVault...');
         rl.close();
