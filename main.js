@@ -72,6 +72,20 @@ function menu() {
       });
       break;
 
+      case '6':
+        rl.question('Sort by field(name/created):',field=>{
+        rl.question('Order (asc,desc):',order=>{
+          const records=[...db.listRecords()];
+          if (field.toLowerCase()==='name') records.sort((a,b)=> a.name.localeCompare(b.name));
+          else records.sort((a,b)=> new Date(a.created)-new Date(b.created));
+
+          if (order.toLowerCase()==='desc') records.reverse();
+          records.forEach(r=>console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value} | Created: ${r.created}`));
+          menu();
+         });
+        });
+       break;
+
       case '9':
         console.log('👋 Exiting NodeVault...');
         rl.close();
