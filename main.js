@@ -6,7 +6,19 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+const path=require('path');
+const fs=require('fs');
+const backupDir = path.join(__dirname,'backup');
+function createBackup(records){
+fs.mkdirSync(backupDir,{recursive: true});
+const timestamp = new Date().toISOString().replace(/[:.]/g,'-');
+const backupFile=path.join(backupDir,`backup_${timestamp}.json`);
+fs.writeFileSync(backupFile,JSON.stringify(records,null,2),'utf8');
+console.log(`Backup created: ${backupFile}`);
 
+
+
+}
 function menu() {
   console.log(`
 ===== NodeVault =====
@@ -29,6 +41,7 @@ function menu() {
           rl.question('Enter value: ', value => {
             db.addRecord({ name, value });
             console.log('✅ Record added successfully!');
+            createBackup(db.listRecords());
             menu();
           });
         });
@@ -47,6 +60,8 @@ function menu() {
             rl.question('New value: ', value => {
               const updated = db.updateRecord(Number(id), name, value);
               console.log(updated ? '✅ Record updated!' : '❌ Record not found.');
+            createBackup(db.listRecords());
+            
               menu();
             });
           });
@@ -57,7 +72,9 @@ function menu() {
         rl.question('Enter record ID to delete: ', id => {
           const deleted = db.deleteRecord(Number(id));
           console.log(deleted ? '🗑️ Record deleted!' : '❌ Record not found.');
-          menu();
+         
+            createBackup(db.listRecords());
+             menu();
         });
         break;
       
@@ -68,7 +85,9 @@ function menu() {
         const results = records.filter(r =>r.id.toString() === term || r.name.toLowerCase().includes(term));
         if(results.length==0) console.log("No records found.");
         else results.forEach(r=> console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value}`));
-        menu();
+       
+            createBackup(db.listRecords());
+             menu();
       });
       break;
 
@@ -81,7 +100,9 @@ function menu() {
 
           if (order.toLowerCase()==='desc') records.reverse();
           records.forEach(r=>console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value} | Created: ${r.created}`));
-          menu();
+         
+            createBackup(db.listRecords());
+             menu();
          });
         });
        break;
